@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
 <%@ page import="fintech_pj_damn.*" %>
+<%@ page import="java.io.PrintWriter" %>
 <%@include file="header.jsp"%>
 <!DOCTYPE html>
 <html>
@@ -11,6 +12,26 @@
 <link rel="stylesheet" href="css/bootstrap.css">
 <title>fintech_pj_damn</title>
 </head>
+<%
+	String unlock = "true";
+	if(session.getAttribute("unlock")!= null){
+		unlock = (String) session.getAttribute("unlock");
+	}
+	if(unlock.equals("false")){
+		long restTime = 0;
+		if(session.getAttribute("locked") != null) restTime = (long) session.getAttribute("locked");
+		PrintWriter script = response.getWriter();
+		script.println("<script>");
+		script.println("alert('" + restTime + "분 잠김');");
+		script.println("</script>");
+	}else if(session.getAttribute("attempts") != null){
+		int attemp = (int) session.getAttribute("attempts");
+		PrintWriter script = response.getWriter();
+		script.println("<script>");
+		script.println("alert('" + attemp + "회 실패');");
+		script.println("</script>");
+	}
+%>
 <body>
 	<div class="container-fluid" >
 		<div class="row align-items-center">

@@ -35,7 +35,6 @@ public class LoginHandler extends HttpServlet {
 		if(dvo != null){
 			HttpSession session =  request.getSession();
 			session.setAttribute("userId", dvo.getId());
-			session.setMaxInactiveInterval(60*100);
 			response.sendRedirect("/fintech_pj_damn");
 		}
 		else{

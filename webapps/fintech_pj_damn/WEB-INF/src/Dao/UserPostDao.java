@@ -5,10 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.security.MessageDigest;
-import java.security.SecureRandom;
-import java.math.BigInteger;
-import java.util.Base64;
+// import java.security.MessageDigest;
+// import java.security.SecureRandom;
+// import java.math.BigInteger;
+// import java.util.Base64;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class UserPostDao {
@@ -25,18 +25,18 @@ public class UserPostDao {
 		   query1 += " where id = ?								";
 
 
-		SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-		byte[] bytes = new byte[16];
-		random.nextBytes(bytes);
+		// SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+		// byte[] bytes = new byte[16];
+		// random.nextBytes(bytes);
 
-		String Salt = new String(Base64.getEncoder().encode(bytes));
-		MessageDigest md = MessageDigest.getInstance("SHA-256");
+		// String Salt = new String(Base64.getEncoder().encode(bytes));
+		// MessageDigest md = MessageDigest.getInstance("SHA-256");
 
-		String SaltPass = Password + Salt;  
-		md.update(SaltPass.getBytes());
+		// String SaltPass = Password + Salt;  
+		// md.update(SaltPass.getBytes());
 
-		String hex = "";
-		hex = String.format("%064x", new BigInteger(1,md.digest()));
+		// String hex = "";
+		// hex = String.format("%064x", new BigInteger(1,md.digest()));
 
 		String hashed = BCrypt.hashpw(Password,BCrypt.gensalt());
 
@@ -93,7 +93,7 @@ public class UserPostDao {
 		Statement stmt = null;
 		ResultSet rs = null;
 		
-		String hashed = BCrypt.hashpw(password,BCrypt.gensalt());
+		String hashed = BCrypt.hashpw(password,BCrypt.gensalt(12));
 		
 		String query = "UPDATE CUSTOMER SET password='" + hashed + "' WHERE id = '" + id + "'";
 

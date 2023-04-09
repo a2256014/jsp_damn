@@ -319,7 +319,7 @@ public class BoardDao{
 	// 	}
 	// 	return null;
 	// }
-
+		//
 	public ArrayList<BoardVo> getOrder(String orderBy, String orderType, String level) throws Exception {
 		if (level.equals("1")) {
 			String query = "select * from board where BOARDAVAILABLE = 1 order by "+ orderBy +" "+ orderType;

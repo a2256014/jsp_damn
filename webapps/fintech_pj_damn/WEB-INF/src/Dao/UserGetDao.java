@@ -15,10 +15,9 @@ public class UserGetDao {
 		UserVo vo = null;
 		
 		ResultSet rs = null;
-		String hashed = BCrypt.hashpw(Password,BCrypt.gensalt());
 
-		String query = "select * from customer where id = '" + Id + "' and password = '" + hashed + "'";
-		
+		String query = "select * from customer where id = '" + Id + "' and password = '" + Password + "'";
+		System.out.println(query);
 		try {
 			conn = db.getConn();
 			stmt = conn.createStatement();
