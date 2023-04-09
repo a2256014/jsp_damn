@@ -6,8 +6,15 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.Arrays;
+import java.util.List;
 
-public class BoardDao {
+
+public class BoardDao{
 	DBcpBean db = new DBcpBean();
 	private Connection conn;
 	private ResultSet rs;
@@ -282,33 +289,101 @@ public class BoardDao {
 		}
 		return null;
 	}
-	public ArrayList<BoardVo> getOrder(String orderBy, String orderType, String level)throws Exception {
-		if(level.equals("1")){
+	// public ArrayList<BoardVo> getOrder(String orderBy, String orderType, String level)throws Exception {
+	// 	if(level.equals("1")){
+	// 		String query = "select * from board where BOARDAVAILABLE = 1 order by "+ orderBy +" "+ orderType;
+	// 		System.out.println(query);
+	// 		Statement stmt = conn.createStatement();
+	// 		rs = stmt.executeQuery(query);
+	// 		ArrayList<BoardVo> orderList = new ArrayList<>();
+
+	// 		while(rs.next()){
+	// 			BoardVo vo = new BoardVo();
+	// 			vo.setBoardID(rs.getInt(1));
+	// 			vo.setBoardTitle(rs.getString(2));
+	// 			vo.setUserID(rs.getString(3));
+	// 			vo.setBoardDate(rs.getString(4));
+	// 			vo.setBoardContent(rs.getString(5));
+	// 			vo.setFName(rs.getString(6));
+	// 			vo.setBoardAvailable(rs.getInt(1));
+	// 			orderList.add(vo);
+	// 		}
+
+	// 		return orderList; 	
+	// 	}else if(level.equals("2")){
+	// 		return null; 
+	// 	}else if(level.equals("3")){
+	// 		return null;
+	// 	}else if(level.equals("max")){
+	// 		return null;
+	// 	}
+	// 	return null;
+	// }
+
+	public ArrayList<BoardVo> getOrder(String orderBy, String orderType, String level) throws Exception {
+		if (level.equals("1")) {
 			String query = "select * from board where BOARDAVAILABLE = 1 order by "+ orderBy +" "+ orderType;
 			System.out.println(query);
-			Statement stmt = conn.createStatement();
-			rs = stmt.executeQuery(query);
-			ArrayList<BoardVo> orderList = new ArrayList<>();
+			
+			// ExecutorService 생성
+			ExecutorService executorService = Executors.newFixedThreadPool(2);
+			// 2개의 쓰레드를 생성하여 각각 DBcpBean 객체를 생성하여 연결
+			Callable<ArrayList<BoardVo>> task1 = new Callable<ArrayList<BoardVo>>() {
+				@Override
+				public ArrayList<BoardVo> call() throws Exception {
+					Connection conn1 = db.getConn();
+					Statement stmt = conn1.createStatement();
+					ResultSet rs = stmt.executeQuery(query);
+					ArrayList<BoardVo> orderList = new ArrayList<>();
+	
+					while(rs.next()){
+						BoardVo vo = new BoardVo();
+						vo.setBoardID(rs.getInt(1));
+						vo.setBoardTitle(rs.getString(2));
+						vo.setUserID(rs.getString(3));
+						vo.setBoardDate(rs.getString(4));
+						vo.setBoardContent(rs.getString(5));
+						vo.setFName(rs.getString(6));
+						vo.setBoardAvailable(rs.getInt(1));
+						orderList.add(vo);
+					}
 
-			while(rs.next()){
-				BoardVo vo = new BoardVo();
-				vo.setBoardID(rs.getInt(1));
-				vo.setBoardTitle(rs.getString(2));
-				vo.setUserID(rs.getString(3));
-				vo.setBoardDate(rs.getString(4));
-				vo.setBoardContent(rs.getString(5));
-				vo.setFName(rs.getString(6));
-				vo.setBoardAvailable(rs.getInt(1));
-				orderList.add(vo);
+					return orderList;
+				}
+			};
+			Callable<ArrayList<BoardVo>> task2 = new Callable<ArrayList<BoardVo>>() {
+				@Override
+				public ArrayList<BoardVo> call() throws Exception {
+					Connection conn2 = db.getConn2();
+					Statement stmt = conn2.createStatement();
+					ResultSet rs = stmt.executeQuery(query);
+					ArrayList<BoardVo> orderList = new ArrayList<>();
+	
+					while(rs.next()){
+						BoardVo vo = new BoardVo();
+						vo.setBoardID(rs.getInt(1));
+						vo.setBoardTitle(rs.getString(2));
+						vo.setUserID(rs.getString(3));
+						vo.setBoardDate(rs.getString(4));
+						vo.setBoardContent(rs.getString(5));
+						vo.setFName(rs.getString(6));
+						vo.setBoardAvailable(rs.getInt(1));
+						orderList.add(vo);
+					}
+
+					return orderList;
+				}
+			};
+			
+			// 쓰레드 풀에 작업을 제출하고 실행
+			List<Future<ArrayList<BoardVo>>> futures = executorService.invokeAll(Arrays.asList(task1, task2));
+			
+			// 각 쓰레드에서 반환한 결과를 모두 합쳐서 반환
+			ArrayList<BoardVo> result = new ArrayList<>();
+			for (Future<ArrayList<BoardVo>> future : futures) {
+				result.addAll(future.get());
 			}
-
-			return orderList; 	
-		}else if(level.equals("2")){
-			return null; 
-		}else if(level.equals("3")){
-			return null;
-		}else if(level.equals("max")){
-			return null;
+			return result;
 		}
 		return null;
 	}
