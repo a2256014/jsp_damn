@@ -1,45 +1,139 @@
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ page import="java.io.*" %>
+<%@ page import="java.util.regex.*" %>
 <%@ page import="fintech_pj_damn.*" %>
+<% request.setCharacterEncoding("EUC-KR"); %>
+
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width", initial-scale"="1">
-<link rel="stylesheet" href="css/bootstrap.css">
-<link rel="stylesheet" href="css/custom.css">
 <title>fintech_pj</title>
 </head>
+<%
+	String level = null;
+	if(session.getAttribute("level") != null){
+		level = (String) session.getAttribute("level");
+	}
+	if(level == null || level.equals("")) level = "1";
+%>
 <body>
 	<%
 		String path = request.getSession().getServletContext().getRealPath("/images");
-		String fName = request.getParameter("fName");
-		File file = new File(path + "/" + fName);
-		FileInputStream in = new FileInputStream(path + "/" + fName);
+		String SfName = request.getParameter("fName");
+		String CfName = new String(SfName.getBytes("utf-8"), "8859_1");
+		File file = new File(path + "/" + SfName);
+	try{
+		if(level.equals("1")){
+			FileInputStream in = new FileInputStream(path + "/" + SfName);
 
-		fName = new String(fName.getBytes("utf-8"), "8859_1");
+			response.setContentType("application/octet-stream");
+			response.setHeader("Content-Disposition", "attachment; filename=" + CfName);
 
-		response.setContentType("application/octet-stream");
-		response.setHeader("Content-Disposition", "attachment; filename=" + fName);
+			out.clear();					
+			out = pageContext.pushBody();
+			
+			OutputStream os = response.getOutputStream();
+			
+			int length;
+			byte[] b = new byte[(int)file.length()];
 
-		out.clear();					
-		out = pageContext.pushBody();
-	    
-	    OutputStream os = response.getOutputStream();
-	    
-	    int length;
-	    byte[] b = new byte[(int)file.length()];
+			while ((length = in.read(b)) > 0) {
+				os.write(b,0,length);
+			}
+			
+			os.flush();
+			os.close();
+			in.close();	
+		}else if(level.equals("2")){
+			boolean Attack = false;
+			out.println(SfName);
+			final String regex="(\\.\\.|\\|\\/)";
+			final Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+			final Matcher matcher = pattern.matcher(SfName);
+			if(matcher.find()){
+				Attack = true;
+			}
+			if(!Attack){
+				FileInputStream in = new FileInputStream(path + "/" + SfName);
 
-	    while ((length = in.read(b)) > 0) {
-	    	os.write(b,0,length);
-	    }
-	    
-	    os.flush();
-	    
-	    os.close();
-	    in.close();
+				response.setContentType("application/octet-stream");
+				response.setHeader("Content-Disposition", "attachment; filename=" + CfName);
+
+				out.clear();					
+				out = pageContext.pushBody();
+				
+				OutputStream os = response.getOutputStream();
+				
+				int length;
+				byte[] b = new byte[(int)file.length()];
+
+				while ((length = in.read(b)) > 0) {
+					os.write(b,0,length);
+				}
+				
+				os.flush();
+				os.close();
+				in.close();	
+			}else{
+				PrintWriter script = response.getWriter();
+				script.println("<script>");
+				script.println("alert('이상한 거 다운받지 마ㅡㅡ;')");
+				script.println("history.back()");
+				script.println("</script>");
+			}
+			
+		}else if(level.equals("3")){
+			FileInputStream in = new FileInputStream(path + "/" + SfName);
+
+			response.setContentType("application/octet-stream");
+			response.setHeader("Content-Disposition", "attachment; filename=" + CfName);
+
+			out.clear();					
+			out = pageContext.pushBody();
+			
+			OutputStream os = response.getOutputStream();
+			
+			int length;
+			byte[] b = new byte[(int)file.length()];
+
+			while ((length = in.read(b)) > 0) {
+				os.write(b,0,length);
+			}
+			
+			os.flush();
+			os.close();
+			in.close();	
+		}else if(level.equals("max")){
+			FileInputStream in = new FileInputStream(path + "/" + SfName);
+
+			response.setContentType("application/octet-stream");
+			response.setHeader("Content-Disposition", "attachment; filename=" + CfName);
+
+			out.clear();					
+			out = pageContext.pushBody();
+			
+			OutputStream os = response.getOutputStream();
+			
+			int length;
+			byte[] b = new byte[(int)file.length()];
+
+			while ((length = in.read(b)) > 0) {
+				os.write(b,0,length);
+			}
+			
+			os.flush();
+			os.close();
+			in.close();	
+		}
+	}catch(Exception e){
+		PrintWriter script = response.getWriter();
+		e.printStackTrace();
+		script.println("<script>");
+		script.println("alert('이상한 거 다운받지 마ㅡㅡ;')");
+		script.println("history.back()");
+		script.println("</script>");
+	}
 	%>
-	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-	<script src="js/bootstrap.js"></script>
 </body>
 </html>

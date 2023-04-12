@@ -127,6 +127,7 @@
 				%>
 				<table class="table table-striped" style="text-align: center; border: 1px solid #dddddd">
 					<thead>
+						<tr>검색어 = <%= request.getParameter("searchText")%></tr>
 						<tr>
 							<th style="background-color: #eeeeee; text-align: center;">번호</th>
 							<th style="background-color: #eeeeee; text-align: center;">제목</th>

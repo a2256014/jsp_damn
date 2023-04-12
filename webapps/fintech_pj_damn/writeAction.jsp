@@ -12,6 +12,13 @@
 </head>
 <body>
 <%
+	String level = null;
+	if(session.getAttribute("level") != null){
+		level = (String) session.getAttribute("level");
+	}
+	if(level == null || level.equals("")) level = "1";
+%>
+<%
 		//실제 물리적 경로
  		String saveDirectory=application.getRealPath("/images");
  		
@@ -25,6 +32,7 @@
 
  		//사용자가 전송한 텍스트 정보 및 파일을 '/storage'에  저장하기 (MultipartRequest의 매개변수에 맞춰서 위에서 지정한 변수를 넣어준 것)
  		MultipartRequest mr=new MultipartRequest(request, saveDirectory, maxPostSize, encoding, policy);
+		
 %>
 	<%
 		String userId = null;
@@ -52,13 +60,28 @@
 					script.println("</script>");
 				} else {
 					BoardDao dao = new BoardDao();
-					int result = dao.write(boardTitle, userId, boardContent, fName);
-					if (result == -1) {
+					int result = dao.write(boardTitle, userId, boardContent, fName, level);
+					if(result == 0){
+						PrintWriter script = response.getWriter();
+						script.println("<script>");
+						script.println("alert('공격하지마ㅡㅡ;')");
+						script.println("history.back()");
+						script.println("</script>");
+					}
+					else if (result == -1) {
 						PrintWriter script = response.getWriter();
 						script.println("<script>");
 						script.println("alert('글쓰기에 실패 했습니다.')");
 						script.println("history.back()");
 						script.println("</script>");
+					}else if (result == -2) {
+
+						PrintWriter script = response.getWriter();
+						script.println("<script>");
+						script.println("location.href = 'deleteFile.jsp?fName="+fName+"'");
+						script.println("alert('이상한거 업로드 하지마 ㅡㅡ;')");
+						script.println("history.back()");
+						script.println("</script>"); 
 					} else {
 						PrintWriter script = response.getWriter();
 						script.println("<script>");

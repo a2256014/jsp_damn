@@ -25,6 +25,12 @@
 
  		//사용자가 전송한 텍스트 정보 및 파일을 '/storage'에  저장하기 (MultipartRequest의 매개변수에 맞춰서 위에서 지정한 변수를 넣어준 것)
  		MultipartRequest mr=new MultipartRequest(request, saveDirectory, maxPostSize, encoding, policy);
+
+		String level = null;
+		if(session.getAttribute("level") != null){
+			level = (String) session.getAttribute("level");
+		}
+		if(level == null) level = "1";
 %>
 	<%
 		String userId = null;
@@ -70,8 +76,15 @@
 				BoardVo vo = new BoardVo();
 				vo = dao.getBoardVo(boardID);
 				
-				int result = dao.update(boardID, boardTitle, boardContent, fName);
-				if (result == -1) {
+				int result = dao.update(boardID, boardTitle, boardContent, fName, level);
+				if(result == 0){
+					PrintWriter script = response.getWriter();
+					script.println("<script>");
+					script.println("alert('공격하지마ㅡㅡ;')");
+					script.println("history.back()");
+					script.println("</script>");
+				}
+				else if (result == -1) {
 					PrintWriter script = response.getWriter();
 					script.println("<script>");
 					script.println("alert('글 수정에 실패 했습니다.')");

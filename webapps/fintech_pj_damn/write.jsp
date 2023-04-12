@@ -13,7 +13,7 @@
 <body>
 	<div class="container">
 		<div class="row" style="margin-top: 50px;">
-			<form method="post" action="writeAction<%=level%>.jsp" enctype="multipart/form-data">
+			<form method="post" action="writeAction.jsp" enctype="multipart/form-data">
 				<table class="table table-striped" style="text-align: center; border: 1px solid #dddddd">
 				<thead>
 					<tr>

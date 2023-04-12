@@ -24,7 +24,7 @@
 		script.println("<script>");
 		script.println("alert('" + restTime + "∫– ¿·±Ë');");
 		script.println("</script>");
-	}else if(session.getAttribute("attempts") != null){
+	}else if(session.getAttribute("attempts") != null && (int) session.getAttribute("attempts") > 0){
 		int attemp = (int) session.getAttribute("attempts");
 		PrintWriter script = response.getWriter();
 		script.println("<script>");

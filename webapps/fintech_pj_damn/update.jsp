@@ -44,7 +44,7 @@
 	%>
 	<div class="container">
 		<div class="row" style="margin-top: 50px;">
-			<form method="post" action="updateAction<%=level%>.jsp?boardID=<%= boardID %>" enctype="multipart/form-data">
+			<form method="post" action="updateAction.jsp?boardID=<%= boardID %>" enctype="multipart/form-data">
 				<table class="table table-striped" style="text-align: center; border: 1px solid #dddddd">
 				<thead>
 					<tr>

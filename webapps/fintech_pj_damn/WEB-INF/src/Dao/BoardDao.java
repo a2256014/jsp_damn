@@ -12,6 +12,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.*;
+import java.io.*;
 
 
 public class BoardDao{
@@ -70,23 +72,136 @@ public class BoardDao{
 		}
 		return -1; // 데이터베이스 오류
 	}
-	
-	public int write(String boardTitle, String userID, String boardContent, String fName) {
+
+	//final Pattern SpecialChars = Pattern.compile("['\"\\-#()@;=*/+]");
+	//Id = SpecialChars.matcher(Id).replaceAll("");
+	public int write(String boardTitle, String userID, String boardContent, String fName, String level) {
 		String SQL = "INSERT INTO BOARD VALUES (?, ?, ?, ?, ?, ?, ?)";
-		System.out.println(fName);
-		try {
-			PreparedStatement pstmt = conn.prepareStatement(SQL);
-			pstmt.setInt(1, getAllNext());
-			pstmt.setString(2, boardTitle);
-			pstmt.setString(3, userID);
-			pstmt.setString(4, getDate());
-			pstmt.setString(5, boardContent);
-			pstmt.setString(6, fName);
-			pstmt.setInt(7, 1);
+		System.out.println(userID + " : " + boardTitle + " : " + boardContent + " : " + fName + " : " + level);
+		if(level.equals("1")){
 			
-			return pstmt.executeUpdate(); 
-		} catch(Exception e) {
-			e.printStackTrace();
+			try {
+				PreparedStatement pstmt = conn.prepareStatement(SQL);
+				pstmt.setInt(1, getAllNext());
+				pstmt.setString(2, boardTitle);
+				pstmt.setString(3, userID);
+				pstmt.setString(4, getDate());
+				pstmt.setString(5, boardContent);
+				pstmt.setString(6, fName);
+				pstmt.setInt(7, 1);
+				
+				return pstmt.executeUpdate(); 
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			return -1; // 데이터베이스 오류
+		}else if(level.equals("2")){
+			boolean Attack = false;
+			boolean fileAttack = false;
+
+			final String regex="(script|style|object|iframe|form)";
+			final String fileRegex="(\\.php|\\.jsp|\\.java)";
+
+			final Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+			final Pattern filePattern = Pattern.compile(fileRegex, Pattern.CASE_INSENSITIVE);
+
+			final Matcher matcher1 = pattern.matcher(boardContent);
+			final Matcher matcher2 = pattern.matcher(boardTitle);
+			final Matcher fileMatcher = filePattern.matcher(fName);
+
+			if(matcher1.find() || matcher2.find()) Attack = true;
+			if(fileMatcher.find()) fileAttack = true;
+
+			if(!Attack && !fileAttack){
+				try {
+					PreparedStatement pstmt = conn.prepareStatement(SQL);
+					pstmt.setInt(1, getAllNext());
+					pstmt.setString(2, boardTitle);
+					pstmt.setString(3, userID);
+					pstmt.setString(4, getDate());
+					pstmt.setString(5, boardContent);
+					pstmt.setString(6, fName);
+					pstmt.setInt(7, 1);
+					
+					return pstmt.executeUpdate(); 
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+				return -1; // 데이터베이스 오류
+			}else{
+				if(Attack) return 0;
+				else return -2;
+			}
+
+		}else if(level.equals("3")){
+			boolean Attack = false;
+			boolean fileAttack = false;
+
+			final String regex="(window|eval|document|alert|prompt|confirm|setTimeout)";
+			final Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+			final Matcher matcher1 = pattern.matcher(boardContent);
+			final Matcher matcher2 = pattern.matcher(boardTitle);
+
+			String path="C:\\kdg\\tomcat\\webapps\\fintech_pj_damn\\images";
+    		try (FileInputStream inputStream = new FileInputStream(path+"/"+fName)) {
+				byte[] buffer = new byte[4];
+				int bytesRead = inputStream.read(buffer);
+				
+				if (bytesRead >= 4) {
+					if ((buffer[0] == (byte) 0xFF && buffer[1] == (byte) 0xD8 && buffer[2] == (byte) 0xFF) || (buffer[0] == (byte) 0x89 && buffer[1] == (byte) 0x50 && buffer[2] == (byte) 0x4E && buffer[3] == (byte) 0x47)) {
+						System.out.println("File is a JPEG or PNG image.");
+					} else {
+						System.out.println("File is not a JPEG or PNG image.");
+						fileAttack = true;
+					}
+				} else {
+					System.out.println("Unable to determine file type.");
+					fileAttack = true;
+            	}
+			} catch (IOException ex) {
+				System.out.println("error");
+			}
+			
+			if(matcher1.find() || matcher2.find()){
+				Attack = true;
+			}
+			if(!Attack && !fileAttack){
+				try {
+					PreparedStatement pstmt = conn.prepareStatement(SQL);
+					pstmt.setInt(1, getAllNext());
+					pstmt.setString(2, boardTitle);
+					pstmt.setString(3, userID);
+					pstmt.setString(4, getDate());
+					pstmt.setString(5, boardContent);
+					pstmt.setString(6, fName);
+					pstmt.setInt(7, 1);
+					
+					return pstmt.executeUpdate(); 
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+				return -1; // 데이터베이스 오류
+			}
+			if(fileAttack) return -2;
+			if(Attack) return 0;
+		}else if(level.equals("max")){
+			boardTitle = HtmlEscape.encodeHtml(boardTitle);
+			boardContent = HtmlEscape.encodeHtml(boardContent);
+			try {
+				PreparedStatement pstmt = conn.prepareStatement(SQL);
+				pstmt.setInt(1, getAllNext());
+				pstmt.setString(2, boardTitle);
+				pstmt.setString(3, userID);
+				pstmt.setString(4, getDate());
+				pstmt.setString(5, boardContent);
+				pstmt.setString(6, fName);
+				pstmt.setInt(7, 1);
+				
+				return pstmt.executeUpdate(); 
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			return -1; // 데이터베이스 오류
 		}
 		return -1; // 데이터베이스 오류
 	}
@@ -182,19 +297,123 @@ public class BoardDao{
 		return null;
 	}
 	
-	public int update(int boardID, String boardTitle, String boardContent, String fName) {
+	public int update(int boardID, String boardTitle, String boardContent, String fName, String level) {
 		String SQL = "UPDATE BOARD SET boardTitle = ?, boardContent = ?, fName = ? WHERE boardID =?";
-		try {
-			PreparedStatement pstmt = conn.prepareStatement(SQL);
-			pstmt.setString(1, boardTitle);
-			pstmt.setString(2, boardContent);
-			pstmt.setString(3, fName);
-			pstmt.setInt(4, boardID);
+		if(level.equals("1")){
+			try {
+				PreparedStatement pstmt = conn.prepareStatement(SQL);
+				pstmt.setString(1, boardTitle);
+				pstmt.setString(2, boardContent);
+				pstmt.setString(3, fName);
+				pstmt.setInt(4, boardID);
+				
+				return pstmt.executeUpdate(); 
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			return -1; // 데이터베이스 오류
+		}else if(level.equals("2")){
+			boolean Attack = false;
+			boolean fileAttack = false;
+			//final Pattern SpecialChars = Pattern.compile("['\"\\-#()@;=*/+]");
+			//Id = SpecialChars.matcher(Id).replaceAll("");
+
+			final String regex="(script|style|object|iframe|form)";
+			final String fileRegex="(\\.php|\\.jsp|\\.java)";
+
+			final Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+			final Pattern filePattern = Pattern.compile(fileRegex, Pattern.CASE_INSENSITIVE);
+			final Matcher matcher1 = pattern.matcher(boardContent);
+			final Matcher matcher2 = pattern.matcher(boardTitle);
+
 			
-			return pstmt.executeUpdate(); 
-		} catch(Exception e) {
-			e.printStackTrace();
+			final Matcher fileMatcher = filePattern.matcher(fName);
+			if(fileMatcher.find()) fileAttack = true;
+			
+			if(matcher1.find() || matcher2.find()){
+				Attack = true;
+			}
+			if(!Attack && !fileAttack){
+				try {
+					PreparedStatement pstmt = conn.prepareStatement(SQL);
+					pstmt.setString(1, boardTitle);
+					pstmt.setString(2, boardContent);
+					pstmt.setString(3, fName);
+					pstmt.setInt(4, boardID);
+					
+					return pstmt.executeUpdate(); 
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+				return -1; // 데이터베이스 오류
+			}
+			if(fileAttack) return -2;
+			if(Attack) return 0;
+		}else if(level.equals("3")){
+			boolean Attack = false;
+			boolean fileAttack = false;
+
+			final String regex="(window|eval|document|alert|prompt|confirm|setTimeout)";
+			final Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+			final Matcher matcher1 = pattern.matcher(boardContent);
+			final Matcher matcher2 = pattern.matcher(boardTitle);
+
+			String path="C:\\kdg\\tomcat\\webapps\\fintech_pj_damn\\images";
+    		try (FileInputStream inputStream = new FileInputStream(path+"/"+fName)) {
+				byte[] buffer = new byte[4];
+				int bytesRead = inputStream.read(buffer);
+				
+				if (bytesRead >= 4) {
+					if ((buffer[0] == (byte) 0xFF && buffer[1] == (byte) 0xD8 && buffer[2] == (byte) 0xFF) || (buffer[0] == (byte) 0x89 && buffer[1] == (byte) 0x50 && buffer[2] == (byte) 0x4E && buffer[3] == (byte) 0x47)) {
+						System.out.println("File is a JPEG or PNG image.");
+					} else {
+						System.out.println("File is not a JPEG or PNG image.");
+						fileAttack = true;
+					}
+				} else {
+					System.out.println("Unable to determine file type.");
+					fileAttack = true;
+            	}
+			} catch (IOException ex) {
+				System.out.println("error");
+			}
+			
+			if(matcher1.find() || matcher2.find()){
+				Attack = true;
+			}
+			if(!Attack && !fileAttack){
+				try {
+					PreparedStatement pstmt = conn.prepareStatement(SQL);
+					pstmt.setString(1, boardTitle);
+					pstmt.setString(2, boardContent);
+					pstmt.setString(3, fName);
+					pstmt.setInt(4, boardID);
+					
+					return pstmt.executeUpdate(); 
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+				return -1;
+			}
+			if(fileAttack) return -2;
+			if(Attack) return 0;
+		}else if(level.equals("max")){
+			boardTitle = HtmlEscape.encodeHtml(boardTitle);
+			boardContent = HtmlEscape.encodeHtml(boardContent);
+			try {
+				PreparedStatement pstmt = conn.prepareStatement(SQL);
+				pstmt.setString(1, boardTitle);
+				pstmt.setString(2, boardContent);
+				pstmt.setString(3, fName);
+				pstmt.setInt(4, boardID);
+				
+				return pstmt.executeUpdate(); 
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			return -1; // 데이터베이스 오류
 		}
+		
 		return -1; // 데이터베이스 오류
 	}
 	

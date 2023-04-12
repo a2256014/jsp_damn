@@ -58,7 +58,7 @@
 						<td>파일</td>
 						<td colspan="2" style="min-height: 200px; text-align: left;">
 							<%= vo.getFName()%>
-							<button type="button" onclick="location.href='fileDownload<%=level%>.jsp?fName=<%= vo.getFName()%>'" class="btn btn-primary me-2">파일 다운로드</button>
+							<button type="button" onclick="location.href='fileDownload.jsp?fName=<%= vo.getFName()%>'" class="btn btn-primary me-2">파일 다운로드</button>
 						</td>
 					</tr>
 					<%} else {%>
@@ -79,7 +79,7 @@
 				if (userId != null && userId.equals(vo.getUserID())) {
 			%>
 					<div>
-						<button type="button" onclick="location.href='update<%=level%>.jsp?boardID=<%= boardID %>'" class="btn btn-primary me-2">수정</button>
+						<button type="button" onclick="location.href='update.jsp?boardID=<%= boardID %>'" class="btn btn-primary me-2">수정</button>
 					</div>
 					<div>
 						<button type="button" onclick="alert('정말로 삭제하시겠습니까?'); location.href='deleteAction.jsp?boardID=<%= boardID %>'" class="btn btn-primary me-2">삭제</button>
