@@ -13,7 +13,7 @@
 <body>
 <%
 		//실제 물리적 경로
- 		String saveDirectory=application.getRealPath("/images");
+ 		String saveDirectory=application.getRealPath("/upload");
  		
  		//저장 최대 용량 (10M) - 각자 알아서 저장무게를 정하되 너무 무겁지 않도록
  		int maxPostSize= 1024*1024*10;
@@ -30,7 +30,7 @@
 		if(session.getAttribute("level") != null){
 			level = (String) session.getAttribute("level");
 		}
-		if(level == null) level = "1";
+		if(level.equals("")) level = "1";
 %>
 	<%
 		String userId = null;

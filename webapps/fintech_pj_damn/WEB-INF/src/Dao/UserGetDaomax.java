@@ -12,7 +12,6 @@ public class UserGetDaomax {
 		DBcpBean db = new DBcpBean();
 		Connection conn = null;
 		UserVo vo = null;
-		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
@@ -31,6 +30,7 @@ public class UserGetDaomax {
 					vo = new UserVo();
 					vo.setId(Id);
 					vo.setPassWord(rs.getString(1));
+					vo.setPrivilege(rs.getString(6));
 				}
 			}
 		}catch(Exception e) {

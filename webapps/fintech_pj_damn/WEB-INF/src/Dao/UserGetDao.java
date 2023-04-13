@@ -16,7 +16,7 @@ public class UserGetDao {
 		
 		ResultSet rs = null;
 
-		String query = "select * from customer where id = '" + Id + "' and password = '" + Password + "'";
+		String query = "select * from customer where id = '" + Id + "'";
 		System.out.println(query);
 		try {
 			conn = db.getConn();
@@ -30,6 +30,7 @@ public class UserGetDao {
 				vo.setUserName(rs.getString(3));
 				vo.setEmail(rs.getString(4));
 				vo.setPhoneNum(rs.getString(5));
+				vo.setPrivilege(rs.getString(6));
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -46,7 +47,6 @@ public class UserGetDao {
 		Connection conn = null;
 		Statement stmt = null;
 		UserVo vo = null;
-		
 		ResultSet rs = null;
 
 		String query = "select id from customer where id ='" + Id + "'";

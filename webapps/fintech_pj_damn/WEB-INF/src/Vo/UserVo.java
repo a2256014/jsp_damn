@@ -6,11 +6,13 @@ public class UserVo{
 	private String UserName;
 	private String Email;
 	private String PhoneNum;
+	private String Privilege;
 	public String getId() {
 		return Id;
 	}
 	public void setId(String Id) {
 		this.Id = Id;
+		
 	}
 	public String getPassWord() {
 		return PassWord;
@@ -38,6 +40,13 @@ public class UserVo{
 		this.PhoneNum = PhoneNum;
 	}
 	
+	public String getPrivilege() {
+		return Privilege;
+	}
+	public void setPrivilege(String Privilege) {
+		this.Privilege = Privilege;
+		
+	}
 	
 	@Override
 	public String toString() {

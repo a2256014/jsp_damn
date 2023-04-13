@@ -3,7 +3,6 @@ package fintech_pj_damn;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -59,13 +58,13 @@ public class LoginHandler2 extends HttpServlet {
 		System.out.println("try login : "  + ipAddress);
 		if(dvo != null && !lockoutTime.containsKey(ipAddress)){
 			session.setAttribute("userId", dvo.getId());
+			session.setAttribute("privilege", dvo.getPrivilege());
 			session.setAttribute("attempts", 0);
 			session.setAttribute("unlock", "true");
 			session.removeAttribute("locked");
 			loginAttempts.remove(ipAddress);
       		lockoutTime.remove(ipAddress);
 
-			session.setMaxInactiveInterval(60*100);
 			response.sendRedirect("/fintech_pj_damn");
 		}
 		else{

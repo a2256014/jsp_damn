@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.regex.*;
 import java.io.*;
 
-
 public class BoardDao{
 	DBcpBean db = new DBcpBean();
 	private Connection conn;
@@ -142,7 +141,7 @@ public class BoardDao{
 			final Matcher matcher1 = pattern.matcher(boardContent);
 			final Matcher matcher2 = pattern.matcher(boardTitle);
 
-			String path="C:\\kdg\\tomcat\\webapps\\fintech_pj_damn\\images";
+			String path="C:\\kdg\\tomcat\\webapps\\fintech_pj_damn\\upload";
     		try (FileInputStream inputStream = new FileInputStream(path+"/"+fName)) {
 				byte[] buffer = new byte[4];
 				int bytesRead = inputStream.read(buffer);
@@ -358,7 +357,7 @@ public class BoardDao{
 			final Matcher matcher1 = pattern.matcher(boardContent);
 			final Matcher matcher2 = pattern.matcher(boardTitle);
 
-			String path="C:\\kdg\\tomcat\\webapps\\fintech_pj_damn\\images";
+			String path="C:\\kdg\\tomcat\\webapps\\fintech_pj_damn\\upload";
     		try (FileInputStream inputStream = new FileInputStream(path+"/"+fName)) {
 				byte[] buffer = new byte[4];
 				int bytesRead = inputStream.read(buffer);

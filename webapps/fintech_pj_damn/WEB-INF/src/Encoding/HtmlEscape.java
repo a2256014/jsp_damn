@@ -1,7 +1,6 @@
 package fintech_pj_damn;
 
 import java.util.HashMap;
-
 public class HtmlEscape
 {
     private static final HashMap<Character, String> htmlEncodeChars = new HashMap<>();

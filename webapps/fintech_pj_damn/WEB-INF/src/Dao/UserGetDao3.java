@@ -60,7 +60,6 @@ public class UserGetDao3 {
 		Connection conn = null;
 		Statement stmt = null;
 		UserVo vo = null;
-		
 		ResultSet rs = null;
 
 		String query = "select id from customer where id ='" + Id + "'";
@@ -75,6 +74,7 @@ public class UserGetDao3 {
 				vo = new UserVo();
 
 				vo.setId(rs.getString(1));
+				vo.setPrivilege(rs.getString(6));
 
 				list.add(vo);
 			}

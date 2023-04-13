@@ -15,6 +15,9 @@
   function showImg() {
         var name = decodeURIComponent(document.location.hash.substr(1));
         var el = document.getElementById("name");
+        if(name == ""){
+          name = "su1.png";
+        }
         el.innerHTML = "<img src='images/"+ name +"' />";
       }
   window.addEventListener("hashchange", function() {

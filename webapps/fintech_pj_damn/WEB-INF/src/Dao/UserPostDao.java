@@ -39,7 +39,6 @@ public class UserPostDao {
 		// hex = String.format("%064x", new BigInteger(1,md.digest()));
 
 		String hashed = BCrypt.hashpw(Password,BCrypt.gensalt());
-
 		String query2 = "insert into Customer values(?, ?, ?, ?, ?)";
 
 		try {
@@ -96,6 +95,35 @@ public class UserPostDao {
 		String hashed = BCrypt.hashpw(password,BCrypt.gensalt(12));
 		
 		String query = "UPDATE CUSTOMER SET password='" + hashed + "' WHERE id = '" + id + "'";
+
+		try{
+			conn = db.getConn();
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(query);
+			if(rs.next()){
+				result = true;
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			if(rs != null) rs.close();
+			if(stmt != null) stmt.close();
+			if(conn != null) conn.close();
+		}
+
+		return result;
+	}
+
+	public boolean setPriv(String id, String privilege) throws Exception{
+		boolean result = false;
+
+		DBcpBean db = new DBcpBean();
+		Connection conn = null;
+		
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		String query = "UPDATE CUSTOMER SET privilege='" + privilege + "' WHERE id = '" + id + "'";
 
 		try{
 			conn = db.getConn();

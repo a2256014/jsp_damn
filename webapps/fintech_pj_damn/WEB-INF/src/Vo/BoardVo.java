@@ -28,6 +28,7 @@ public class BoardVo {
 		this.userID = userID;
 	}
 	public String getBoardDate() {
+		
 		return boardDate;
 	}
 	public void setBoardDate(String boardDate) {

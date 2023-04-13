@@ -10,6 +10,7 @@
 
 <%
 	session.removeAttribute("userId");
+	session.removeAttribute("privilege");
 	//세션이름이 "id"인것을 삭제함
 	response.sendRedirect("/fintech_pj_damn");
 %>

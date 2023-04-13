@@ -1,7 +1,6 @@
 package fintech_pj_damn;
 
 import java.sql.Connection;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;

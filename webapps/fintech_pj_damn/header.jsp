@@ -20,15 +20,34 @@
 		if (session.getAttribute("userId") != null) {
 			userId = (String) session.getAttribute("userId");
 		}
+
 		String level = null;
 		if(session.getAttribute("level") != null){
 			level = (String) session.getAttribute("level");
-		}
-		
-		if(level == null){
+		}else{
 			session.setAttribute("level","");
 		}
+	
+		String privilege = null;
+		if(session.getAttribute("privilege") != null){
+			privilege = (String) session.getAttribute("privilege");
+		}
+
+		int csrf = 0;
+		if(session.getAttribute("csrf") != null){
+			csrf = (int) session.getAttribute("csrf");
+		}
+
 %>
+<%if(csrf == 1){%>
+	<%@include file="success.jsp"%>
+	<script>
+		setTimeout(function() {
+    	<% session.setAttribute("csrf",0); %>
+		location.reload();
+  		}, 5000);
+	</script>
+<%}%>
 	<header class="p-3 text-bg-dark">
    
 
@@ -48,7 +67,12 @@
           <li><a href="/fintech_pj_damn" class="nav-link px-2 text-white">메인</a></li>
           <li><a href="board.jsp" class="nav-link px-2 text-white">게시판</a></li>
 		  <li><a href="user_list.jsp" class="nav-link px-2 text-white">유저정보</a></li>
-		  <li><a  href="levelChange.jsp" class="nav-link px-2 text-white">Level 변경</a></li>
+		  <li><a href="levelChange.jsp" class="nav-link px-2 text-white">Level 변경</a></li>
+		  <%if(csrf != 0){%>
+		  	<li><a href="csrf.jsp" class="nav-link px-2 text-red">CSRF성공</a></li>
+		  <%}else{%>
+			<li><a href="csrf.jsp" class="nav-link px-2 text-white">CSRF해줘</a></li>
+		  <%}%>
         </ul>
 		
 		<% 
@@ -61,6 +85,14 @@
 		<% 		
 			} else {
 		%>
+		<%if(privilege.equals("ADMIN") || privilege.equals("Admin")){%>
+			<div style="padding-right : 10px; color: red;">권한 = <%= privilege%></div>
+		<%}else if(privilege.equals("Human") || privilege.equals("NORMAL")){%>
+			<div style="padding-right : 10px; color: yellow;">권한 = <%= privilege%></div>
+		<%}else{%>
+			<div style="padding-right : 10px; color: gray;">권한 = <%= privilege%></div>
+		<%}%>
+		
 		<div class="dropdown">
 		  <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
 			<%=userId%>
@@ -89,5 +121,6 @@
       </div>
     </div>
 	  </header>
+
 </body>
 </html>

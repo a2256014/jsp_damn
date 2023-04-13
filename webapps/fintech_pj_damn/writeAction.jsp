@@ -19,20 +19,11 @@
 	if(level == null || level.equals("")) level = "1";
 %>
 <%
-		//실제 물리적 경로
- 		String saveDirectory=application.getRealPath("/images");
- 		
- 		//저장 최대 용량 (10M) - 각자 알아서 저장무게를 정하되 너무 무겁지 않도록
+ 		String saveDirectory=application.getRealPath("/upload");
  		int maxPostSize= 1024*1024*10;
- 		
- 		//한글 조합
  		String encoding="EUC-KR";
-
  		DefaultFileRenamePolicy policy = new DefaultFileRenamePolicy();
-
- 		//사용자가 전송한 텍스트 정보 및 파일을 '/storage'에  저장하기 (MultipartRequest의 매개변수에 맞춰서 위에서 지정한 변수를 넣어준 것)
  		MultipartRequest mr=new MultipartRequest(request, saveDirectory, maxPostSize, encoding, policy);
-		
 %>
 	<%
 		String userId = null;

@@ -2,7 +2,6 @@ package fintech_pj_damn;
 
 import java.io.IOException;
 import java.util.*;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -35,6 +34,7 @@ public class LoginHandler extends HttpServlet {
 		if(dvo != null){
 			HttpSession session =  request.getSession();
 			session.setAttribute("userId", dvo.getId());
+			session.setAttribute("privilege", dvo.getPrivilege());
 			response.sendRedirect("/fintech_pj_damn");
 		}
 		else{

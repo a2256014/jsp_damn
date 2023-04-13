@@ -5,7 +5,7 @@
     PrintWriter script = response.getWriter();
     
     String fileName = request.getParameter("fName"); //지울 파일명
-    String fileDir = "/images"; //지울 파일이 존재하는 디렉토리
+    String fileDir = "/upload"; //지울 파일이 존재하는 디렉토리
     String filePath = request.getRealPath(fileDir) + "/"; //파일이 존재하는 실제경로
 
     filePath += fileName;
