@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
-  <display-name>fintech_pj</display-name>
+  <display-name>fintech_pj_damn</display-name>
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
     <welcome-file>index.jsp</welcome-file>
@@ -47,13 +47,14 @@
 </servlet>
 
 <servlet>
-        <servlet-name>jcaptcha</servlet-name>
-        <servlet-class>com.octo.captcha.module.servlet.image.SimpleImageCaptchaServlet</servlet-class>
+	<servlet-name>captcha</servlet-name>
+	<servlet-class>fintech_pj_damn.captchaUtil</servlet-class>
 </servlet>
-<servlet-mapping>
-        <servlet-name>jcaptcha</servlet-name>
-        <url-pattern>/jcaptcha.jpg</url-pattern>
-</servlet-mapping>
+
+<listener>
+  <listener-class>fintech_pj_damn.SessionListener</listener-class>
+</listener>
+
 
 <session-config>
 	<session-timeout>-1</session-timeout>

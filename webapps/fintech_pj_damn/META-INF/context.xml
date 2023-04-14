@@ -31,10 +31,10 @@
               type="javax.sql.DataSource" driverClassName="oracle.jdbc.OracleDriver"
               url="jdbc:oracle:thin:@127.0.0.1:1521:orcl"
               username="dogyun" password="1234" maxTotal="10000" maxIdle="1000"
-              maxWaitMillis="5000"/>
+              maxWaitMillis="5000" removeAbandoned="true" removeAbandonedTimeout="10"/>
   <Resource name="jdbc/myoracle2" auth="Container"
               type="javax.sql.DataSource" driverClassName="oracle.jdbc.OracleDriver"
               url="jdbc:oracle:thin:@127.0.0.1:1522:orcl"
               username="dogyun" password="1234" maxTotal="10000" maxIdle="1000"
-              maxWaitMillis="5000"/>
+              maxWaitMillis="5000" removeAbandoned="true" removeAbandonedTimeout="10"/>
 </Context>

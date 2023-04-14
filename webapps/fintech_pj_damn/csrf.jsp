@@ -22,8 +22,11 @@
             }
         }
     }
+
     csrfVo cv = new csrfVo();
     String csrfToken = cv.getUuid();
+
+    session.setAttribute("csrfToken",csrfToken);
 %>
 <body>
 	<div class="container">
@@ -85,10 +88,18 @@
                 </form>
                 </div>
                 <div style="height : 50px;">
-                <form method="get" name="csrf" action="/fintech_pj_damn/csrf2" style="display: flex;  align-items: center;">
+                <form method="post" name="csrf" action="/fintech_pj_damn/csrf2" style="display: flex;  align-items: center;">
                     <input type="hidden" name="id" value="<%= userId%>"></input>
-                    <input type="hidden" name="csrfToken" value="<%= csrfToken%>"></input>
-                    <img src="jcaptcha.jpg"/> <input type="text" name="jcaptcha" value="" />
+                    <div class="form-group">
+                        <label for="captcha" style="display: block">자동 CSRF 방지 </label>
+                        <div class="captcha">
+                            <div class="captcha_child">
+                                <img id="captchaImg" src="captcha" alt="캡차 이미지"/>
+                            </div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="캡차 입력" name="captcha" maxlength="6">
+                    </div>
+						
                     <select class="form-control" name="privilege" style="width : 140px;">
 							<option value="Slave">노예</option>
 							<option value="Human">사람</option>
@@ -97,6 +108,7 @@
                     <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                         <button type="submit" class="btn btn-warning">CSRF 시도 Ver.5</button>
                     </div>
+                    
                 </form>
                 </div>
 			</div>
@@ -107,3 +119,14 @@
   </div>
 </body>
 </html>
+<style>
+.captcha{
+    overflow: hidden;
+}
+.captcha_child{
+    float: left;
+}
+.captcha_child_two{
+    float: right;
+}
+</style>

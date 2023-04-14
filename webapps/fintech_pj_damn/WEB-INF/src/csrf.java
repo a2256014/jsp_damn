@@ -22,13 +22,20 @@ public class csrf extends HttpServlet {
 
         UserPostDao dao = new UserPostDao();
 
-        if(session.getAttribute("privilege").equals("ADMIN")){
+        if(id.equals("admin")){
+            response.setContentType("text/html; charset=euc-kr");
+            PrintWriter w = response.getWriter();
+            w.write("<script>alert('관리자는 못바꿈'); history.back();</script>");
+            w.flush();
+            w.close();
+        }
+        else if(session.getAttribute("privilege").equals("ADMIN")){
             try {
                 dao.setPriv(id, priv);
 
                 response.setContentType("text/html; charset=euc-kr");
                 PrintWriter w = response.getWriter();
-                w.write("<script>alert('당했지? 이자식아');</script>");
+                w.write("<script>alert('당했지? 이자식아'); history.back();</script>");
                 w.flush();
                 w.close();
             } catch(Exception e) {
@@ -36,10 +43,10 @@ public class csrf extends HttpServlet {
             }
         }else{
             response.setContentType("text/html; charset=euc-kr");
-                PrintWriter w = response.getWriter();
-                w.write("<script>alert('관리자가 아닙니다.'); history.back();</script>");
-                w.flush();
-                w.close();
+            PrintWriter w = response.getWriter();
+            w.write("<script>alert('관리자가 아닙니다.'); history.back();</script>");
+            w.flush();
+            w.close();
         }
         
 	}
@@ -50,14 +57,20 @@ public class csrf extends HttpServlet {
         String priv = request.getParameter("privilege");
 
         UserPostDao dao = new UserPostDao();
-
-        if(session.getAttribute("privilege").equals("ADMIN")){
+        if(id.equals("admin")){
+            response.setContentType("text/html; charset=euc-kr");
+            PrintWriter w = response.getWriter();
+            w.write("<script>alert('관리자는 못바꿈'); history.back();</script>");
+            w.flush();
+            w.close();
+        }
+        else if(session.getAttribute("privilege").equals("ADMIN")){
             try {
                 dao.setPriv(id, priv);
 
                 response.setContentType("text/html; charset=euc-kr");
                 PrintWriter w = response.getWriter();
-                w.write("<script>alert('당했지? 이자식아');</script>");
+                w.write("<script>alert('당했지? 이자식아'); history.back();</script>");
                 w.flush();
                 w.close();
             } catch(Exception e) {

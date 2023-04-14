@@ -61,6 +61,7 @@ public class LoginHandler2 extends HttpServlet {
 			session.setAttribute("privilege", dvo.getPrivilege());
 			session.setAttribute("attempts", 0);
 			session.setAttribute("unlock", "true");
+			session.setAttribute("csrf", 0);
 			session.removeAttribute("locked");
 			loginAttempts.remove(ipAddress);
       		lockoutTime.remove(ipAddress);

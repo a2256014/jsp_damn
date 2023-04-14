@@ -35,6 +35,7 @@ public class LoginHandler3 extends HttpServlet {
 			HttpSession session =  request.getSession();
 			session.setAttribute("userId", dvo.getId());
 			session.setAttribute("privilege", dvo.getPrivilege());
+			session.setAttribute("csrf", 0);
 			session.setMaxInactiveInterval(60*100);
 			response.sendRedirect("/fintech_pj_damn");
 		}

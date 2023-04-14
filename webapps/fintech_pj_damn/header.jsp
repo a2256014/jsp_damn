@@ -14,6 +14,43 @@
 <script src="/fintech_pj_damn/js/bootstrap.js"></script>
 <title>fintech_pj_damn</title>
 </head>
+<%
+    String wsUrl = "ws://localhost:8000/fintech_pj_damn/websocket";
+%>
+<script>
+    var websocket = new WebSocket("<%= wsUrl %>");
+
+    websocket.onopen = function(event) {
+        console.log("WebSocket connected.");
+    };
+
+    websocket.onmessage = function(event) {
+        console.log("Received message: " + event.data);
+    };
+
+    websocket.onclose = function(event) {
+        console.log("WebSocket disconnected.");
+    };
+
+    websocket.onerror = function(event) {
+        console.error("WebSocket error: " + event.data);
+    };
+</script>
+<script>
+    // 서버에서 메시지 받기
+    websocket.onmessage = function(event) {
+        console.log("Received message: " + event.data);
+		// 받은 메시지를 JSON 객체로 변환
+		var message = JSON.parse(event.data);
+
+		// 메시지 중 privilege가 변경된 경우
+		if (message.type == "csrfChanged" && message.csrf == 0) {
+			// 페이지 새로고침
+			location.reload();
+		}
+    };
+</script>
+
 <body>
 	<% 
 		String userId = null;
