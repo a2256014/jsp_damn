@@ -15,7 +15,7 @@ public class UserGetDaomax {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
-		String query = "select password";
+		String query = "select *";
 		   query += "  from customer									";	
 		   query += " where id = ?								";
 
@@ -26,10 +26,10 @@ public class UserGetDaomax {
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
-				if(BCrypt.checkpw(Password,rs.getString(1))){
+				if(BCrypt.checkpw(Password,rs.getString(2))){
 					vo = new UserVo();
 					vo.setId(Id);
-					vo.setPassWord(rs.getString(1));
+					vo.setPassWord(rs.getString(2));
 					vo.setPrivilege(rs.getString(6));
 				}
 			}

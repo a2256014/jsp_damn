@@ -27,11 +27,12 @@
 %>
 	<%
 		String userId = null;
-
+		
 		String boardTitle = mr.getParameter("boardTitle");
 		String boardContent = mr.getParameter("boardContent");
 		String fName = mr.getFilesystemName("fName");
-
+		String contentType = mr.getContentType("fName");
+		
 		if (session.getAttribute("userId") != null) {
 			userId = (String) session.getAttribute("userId");
 		}
@@ -51,7 +52,7 @@
 					script.println("</script>");
 				} else {
 					BoardDao dao = new BoardDao();
-					int result = dao.write(boardTitle, userId, boardContent, fName, level);
+					int result = dao.write(boardTitle, userId, boardContent, fName, contentType, level);
 					if(result == 0){
 						PrintWriter script = response.getWriter();
 						script.println("<script>");

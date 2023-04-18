@@ -58,6 +58,7 @@ public class LoginHandler2 extends HttpServlet {
 		System.out.println("try login : "  + ipAddress);
 		if(dvo != null && !lockoutTime.containsKey(ipAddress)){
 			session.setAttribute("userId", dvo.getId());
+			session.setAttribute("IP", ipAddress);
 			session.setAttribute("privilege", dvo.getPrivilege());
 			session.setAttribute("attempts", 0);
 			session.setAttribute("unlock", "true");
@@ -65,7 +66,7 @@ public class LoginHandler2 extends HttpServlet {
 			session.removeAttribute("locked");
 			loginAttempts.remove(ipAddress);
       		lockoutTime.remove(ipAddress);
-
+			
 			response.sendRedirect("/fintech_pj_damn");
 		}
 		else{
@@ -87,8 +88,6 @@ public class LoginHandler2 extends HttpServlet {
 			response.sendRedirect("./login.jsp");
 		}
 
-		System.out.print("count : " + loginAttempts.get(ipAddress) + "\n"); 
-		System.out.print("restTime : ");
 		if(lockoutStart != null){
 			System.out.print((lockoutDurationMillis - (new Date().getTime() - lockoutStart.getTime()))/60000);
 		}

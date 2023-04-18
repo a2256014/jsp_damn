@@ -4,6 +4,7 @@
 <%@ page import="java.io.PrintWriter" %>
 <%@page import="com.oreilly.servlet.MultipartRequest"%>
 <%@page import="com.oreilly.servlet.multipart.DefaultFileRenamePolicy"%>
+<%@ page import="java.util.Enumeration" %>
 <% request.setCharacterEncoding("EUC-KR"); %>
 <!DOCTYPE html>
 <html>
@@ -11,6 +12,7 @@
 <title>fintech_pj</title>
 </head>
 <body>
+
 <%
 		//실제 물리적 경로
  		String saveDirectory=application.getRealPath("/upload");
@@ -38,7 +40,9 @@
 		String boardTitle = mr.getParameter("boardTitle");
 		String boardContent = mr.getParameter("boardContent");
 		String fName = mr.getFilesystemName("fName");
+		String content_Type = mr.getContentType("fName");
 //		String ext = fName.substring(fName.lastIndexOf(".") + 1);
+
 		if (session.getAttribute("userId") != null) {
 			userId = (String) session.getAttribute("userId");
 		}
@@ -76,7 +80,7 @@
 				BoardVo vo = new BoardVo();
 				vo = dao.getBoardVo(boardID);
 				
-				int result = dao.update(boardID, boardTitle, boardContent, fName, level);
+				int result = dao.update(boardID, boardTitle, boardContent, fName, content_Type, level);
 				if(result == 0){
 					PrintWriter script = response.getWriter();
 					script.println("<script>");
@@ -97,6 +101,7 @@
 					if(curF!=null && !curF.equals(fName)){
 						script.println("<script>");
 						script.println("location.href = 'deleteFile.jsp?fName="+curF+"'");
+						script.println("alert('이상한거 업로드 하지마 ㅡㅡ;')");
 						script.println("</script>");
 					}else{
 						script.println("<script>");

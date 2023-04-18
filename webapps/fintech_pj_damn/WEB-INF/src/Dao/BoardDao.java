@@ -74,7 +74,7 @@ public class BoardDao{
 
 	//final Pattern SpecialChars = Pattern.compile("['\"\\-#()@;=*/+]");
 	//Id = SpecialChars.matcher(Id).replaceAll("");
-	public int write(String boardTitle, String userID, String boardContent, String fName, String level) {
+	public int write(String boardTitle, String userID, String boardContent, String fName, String contentType, String level) {
 		String SQL = "INSERT INTO BOARD VALUES (?, ?, ?, ?, ?, ?, ?)";
 		System.out.println(userID + " : " + boardTitle + " : " + boardContent + " : " + fName + " : " + level);
 		if(level.equals("1")){
@@ -99,14 +99,14 @@ public class BoardDao{
 			boolean fileAttack = false;
 
 			final String regex="(script|style|object|iframe|form)";
-			final String fileRegex="(\\.php|\\.jsp|\\.java)";
+			final String fileRegex="(application|octet-stream)";
 
 			final Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 			final Pattern filePattern = Pattern.compile(fileRegex, Pattern.CASE_INSENSITIVE);
 
 			final Matcher matcher1 = pattern.matcher(boardContent);
 			final Matcher matcher2 = pattern.matcher(boardTitle);
-			final Matcher fileMatcher = filePattern.matcher(fName);
+			final Matcher fileMatcher = filePattern.matcher(contentType);
 
 			if(matcher1.find() || matcher2.find()) Attack = true;
 			if(fileMatcher.find()) fileAttack = true;
@@ -296,7 +296,7 @@ public class BoardDao{
 		return null;
 	}
 	
-	public int update(int boardID, String boardTitle, String boardContent, String fName, String level) {
+	public int update(int boardID, String boardTitle, String boardContent, String fName, String contentType, String level) {
 		String SQL = "UPDATE BOARD SET boardTitle = ?, boardContent = ?, fName = ? WHERE boardID =?";
 		if(level.equals("1")){
 			try {
@@ -317,18 +317,20 @@ public class BoardDao{
 			//final Pattern SpecialChars = Pattern.compile("['\"\\-#()@;=*/+]");
 			//Id = SpecialChars.matcher(Id).replaceAll("");
 
+			//Content-Type: image/jpeg
+			//Content-Type: application/octet-stream
 			final String regex="(script|style|object|iframe|form)";
-			final String fileRegex="(\\.php|\\.jsp|\\.java)";
+			final String fileRegex="(application|octet-stream)";
 
 			final Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 			final Pattern filePattern = Pattern.compile(fileRegex, Pattern.CASE_INSENSITIVE);
 			final Matcher matcher1 = pattern.matcher(boardContent);
 			final Matcher matcher2 = pattern.matcher(boardTitle);
 
-			
-			final Matcher fileMatcher = filePattern.matcher(fName);
+			final Matcher fileMatcher = filePattern.matcher(contentType);
+
 			if(fileMatcher.find()) fileAttack = true;
-			
+
 			if(matcher1.find() || matcher2.find()){
 				Attack = true;
 			}
@@ -507,103 +509,103 @@ public class BoardDao{
 		}
 		return null;
 	}
-	// public ArrayList<BoardVo> getOrder(String orderBy, String orderType, String level)throws Exception {
-	// 	if(level.equals("1")){
-	// 		String query = "select * from board where BOARDAVAILABLE = 1 order by "+ orderBy +" "+ orderType;
-	// 		System.out.println(query);
-	// 		Statement stmt = conn.createStatement();
-	// 		rs = stmt.executeQuery(query);
-	// 		ArrayList<BoardVo> orderList = new ArrayList<>();
-
-	// 		while(rs.next()){
-	// 			BoardVo vo = new BoardVo();
-	// 			vo.setBoardID(rs.getInt(1));
-	// 			vo.setBoardTitle(rs.getString(2));
-	// 			vo.setUserID(rs.getString(3));
-	// 			vo.setBoardDate(rs.getString(4));
-	// 			vo.setBoardContent(rs.getString(5));
-	// 			vo.setFName(rs.getString(6));
-	// 			vo.setBoardAvailable(rs.getInt(1));
-	// 			orderList.add(vo);
-	// 		}
-
-	// 		return orderList; 	
-	// 	}else if(level.equals("2")){
-	// 		return null; 
-	// 	}else if(level.equals("3")){
-	// 		return null;
-	// 	}else if(level.equals("max")){
-	// 		return null;
-	// 	}
-	// 	return null;
-	// }
-		//
-	public ArrayList<BoardVo> getOrder(String orderBy, String orderType, String level) throws Exception {
-		if (level.equals("1")) {
+	public ArrayList<BoardVo> getOrder(String orderBy, String orderType, String level)throws Exception {
+		if(level.equals("1")){
 			String query = "select * from board where BOARDAVAILABLE = 1 order by "+ orderBy +" "+ orderType;
 			System.out.println(query);
-			
-			// ExecutorService 생성
-			ExecutorService executorService = Executors.newFixedThreadPool(2);
-			// 2개의 쓰레드를 생성하여 각각 DBcpBean 객체를 생성하여 연결
-			Callable<ArrayList<BoardVo>> task1 = new Callable<ArrayList<BoardVo>>() {
-				@Override
-				public ArrayList<BoardVo> call() throws Exception {
-					Connection conn1 = db.getConn();
-					Statement stmt = conn1.createStatement();
-					ResultSet rs = stmt.executeQuery(query);
-					ArrayList<BoardVo> orderList = new ArrayList<>();
-	
-					while(rs.next()){
-						BoardVo vo = new BoardVo();
-						vo.setBoardID(rs.getInt(1));
-						vo.setBoardTitle(rs.getString(2));
-						vo.setUserID(rs.getString(3));
-						vo.setBoardDate(rs.getString(4));
-						vo.setBoardContent(rs.getString(5));
-						vo.setFName(rs.getString(6));
-						vo.setBoardAvailable(rs.getInt(1));
-						orderList.add(vo);
-					}
+			Statement stmt = conn.createStatement();
+			rs = stmt.executeQuery(query);
+			ArrayList<BoardVo> orderList = new ArrayList<>();
 
-					return orderList;
-				}
-			};
-			Callable<ArrayList<BoardVo>> task2 = new Callable<ArrayList<BoardVo>>() {
-				@Override
-				public ArrayList<BoardVo> call() throws Exception {
-					Connection conn2 = db.getConn2();
-					Statement stmt = conn2.createStatement();
-					ResultSet rs = stmt.executeQuery(query);
-					ArrayList<BoardVo> orderList = new ArrayList<>();
-	
-					while(rs.next()){
-						BoardVo vo = new BoardVo();
-						vo.setBoardID(rs.getInt(1));
-						vo.setBoardTitle(rs.getString(2));
-						vo.setUserID(rs.getString(3));
-						vo.setBoardDate(rs.getString(4));
-						vo.setBoardContent(rs.getString(5));
-						vo.setFName(rs.getString(6));
-						vo.setBoardAvailable(rs.getInt(1));
-						orderList.add(vo);
-					}
-
-					return orderList;
-				}
-			};
-			
-			// 쓰레드 풀에 작업을 제출하고 실행
-			List<Future<ArrayList<BoardVo>>> futures = executorService.invokeAll(Arrays.asList(task1, task2));
-			
-			// 각 쓰레드에서 반환한 결과를 모두 합쳐서 반환
-			ArrayList<BoardVo> result = new ArrayList<>();
-			for (Future<ArrayList<BoardVo>> future : futures) {
-				result.addAll(future.get());
+			while(rs.next()){
+				BoardVo vo = new BoardVo();
+				vo.setBoardID(rs.getInt(1));
+				vo.setBoardTitle(rs.getString(2));
+				vo.setUserID(rs.getString(3));
+				vo.setBoardDate(rs.getString(4));
+				vo.setBoardContent(rs.getString(5));
+				vo.setFName(rs.getString(6));
+				vo.setBoardAvailable(rs.getInt(1));
+				orderList.add(vo);
 			}
-			return result;
+
+			return orderList; 	
+		}else if(level.equals("2")){
+			return null; 
+		}else if(level.equals("3")){
+			return null;
+		}else if(level.equals("max")){
+			return null;
 		}
 		return null;
 	}
+		//
+	// public ArrayList<BoardVo> getOrder(String orderBy, String orderType, String level) throws Exception {
+	// 	if (level.equals("1")) {
+	// 		String query = "select * from board where BOARDAVAILABLE = 1 order by "+ orderBy +" "+ orderType;
+	// 		System.out.println(query);
+			
+	// 		// ExecutorService 생성
+	// 		ExecutorService executorService = Executors.newFixedThreadPool(2);
+	// 		// 2개의 쓰레드를 생성하여 각각 DBcpBean 객체를 생성하여 연결
+	// 		Callable<ArrayList<BoardVo>> task1 = new Callable<ArrayList<BoardVo>>() {
+	// 			@Override
+	// 			public ArrayList<BoardVo> call() throws Exception {
+	// 				Connection conn1 = db.getConn();
+	// 				Statement stmt = conn1.createStatement();
+	// 				ResultSet rs = stmt.executeQuery(query);
+	// 				ArrayList<BoardVo> orderList = new ArrayList<>();
+	
+	// 				while(rs.next()){
+	// 					BoardVo vo = new BoardVo();
+	// 					vo.setBoardID(rs.getInt(1));
+	// 					vo.setBoardTitle(rs.getString(2));
+	// 					vo.setUserID(rs.getString(3));
+	// 					vo.setBoardDate(rs.getString(4));
+	// 					vo.setBoardContent(rs.getString(5));
+	// 					vo.setFName(rs.getString(6));
+	// 					vo.setBoardAvailable(rs.getInt(1));
+	// 					orderList.add(vo);
+	// 				}
+
+	// 				return orderList;
+	// 			}
+	// 		};
+	// 		Callable<ArrayList<BoardVo>> task2 = new Callable<ArrayList<BoardVo>>() {
+	// 			@Override
+	// 			public ArrayList<BoardVo> call() throws Exception {
+	// 				Connection conn2 = db.getConn2();
+	// 				Statement stmt = conn2.createStatement();
+	// 				ResultSet rs = stmt.executeQuery(query);
+	// 				ArrayList<BoardVo> orderList = new ArrayList<>();
+	
+	// 				while(rs.next()){
+	// 					BoardVo vo = new BoardVo();
+	// 					vo.setBoardID(rs.getInt(1));
+	// 					vo.setBoardTitle(rs.getString(2));
+	// 					vo.setUserID(rs.getString(3));
+	// 					vo.setBoardDate(rs.getString(4));
+	// 					vo.setBoardContent(rs.getString(5));
+	// 					vo.setFName(rs.getString(6));
+	// 					vo.setBoardAvailable(rs.getInt(1));
+	// 					orderList.add(vo);
+	// 				}
+
+	// 				return orderList;
+	// 			}
+	// 		};
+			
+	// 		// 쓰레드 풀에 작업을 제출하고 실행
+	// 		List<Future<ArrayList<BoardVo>>> futures = executorService.invokeAll(Arrays.asList(task1, task2));
+			
+	// 		// 각 쓰레드에서 반환한 결과를 모두 합쳐서 반환
+	// 		ArrayList<BoardVo> result = new ArrayList<>();
+	// 		for (Future<ArrayList<BoardVo>> future : futures) {
+	// 			result.addAll(future.get());
+	// 		}
+	// 		return result;
+	// 	}
+	// 	return null;
+	// }
 
 }

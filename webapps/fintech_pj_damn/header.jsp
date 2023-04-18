@@ -75,6 +75,11 @@
 			csrf = (int) session.getAttribute("csrf");
 		}
 
+		String IP = null;
+		if(session.getAttribute("IP") != null){
+			IP = (String) session.getAttribute("IP");
+		}
+
 %>
 <%if(csrf == 1){%>
 	<%@include file="success.jsp"%>
@@ -104,12 +109,12 @@
           <li><a href="/fintech_pj_damn" class="nav-link px-2 text-white">메인</a></li>
           <li><a href="board.jsp" class="nav-link px-2 text-white">게시판</a></li>
 		  <li><a href="user_list.jsp" class="nav-link px-2 text-white">유저정보</a></li>
-		  <li><a href="levelChange.jsp" class="nav-link px-2 text-white">Level 변경</a></li>
 		  <%if(csrf != 0){%>
 		  	<li><a href="csrf.jsp" class="nav-link px-2 text-red">CSRF성공</a></li>
 		  <%}else{%>
 			<li><a href="csrf.jsp" class="nav-link px-2 text-white">CSRF해줘</a></li>
 		  <%}%>
+		   <li><a href="levelChange.jsp" class="nav-link px-2 text-white">Level 변경</a></li>
         </ul>
 		
 		<% 
@@ -122,6 +127,9 @@
 		<% 		
 			} else {
 		%>
+		<%if(IP != null){%>
+			<div style="padding-right : 10px;">접속 = <%=IP%></div>
+		<%}%>
 		<%if(privilege.equals("ADMIN") || privilege.equals("Admin")){%>
 			<div style="padding-right : 10px; color: red;">권한 = <%= privilege%></div>
 		<%}else if(privilege.equals("Human") || privilege.equals("NORMAL")){%>

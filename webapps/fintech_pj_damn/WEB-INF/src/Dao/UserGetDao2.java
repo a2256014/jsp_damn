@@ -15,7 +15,7 @@ public class UserGetDao2 {
 		
 		ResultSet rs = null;
 
-		String query = "select password from customer where id = '" + Id + "'";
+		String query = "select * from customer where id = '" + Id + "'";
 
 		try {
 			conn = db.getConn();
@@ -23,10 +23,11 @@ public class UserGetDao2 {
 			rs = stmt.executeQuery(query);
 				
 			if(rs.next()) {
-				if(BCrypt.checkpw(Password,rs.getString(1))){
+				if(BCrypt.checkpw(Password,rs.getString(2))){
 					vo = new UserVo();
 					vo.setId(Id);
-					vo.setPassWord(rs.getString(1));
+					vo.setPassWord(rs.getString(2));
+					vo.setPrivilege(rs.getString(6));
 				}
 			}
 		}catch(Exception e) {

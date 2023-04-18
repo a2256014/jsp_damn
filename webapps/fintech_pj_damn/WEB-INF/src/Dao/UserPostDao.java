@@ -39,7 +39,7 @@ public class UserPostDao {
 		// hex = String.format("%064x", new BigInteger(1,md.digest()));
 
 		String hashed = BCrypt.hashpw(Password,BCrypt.gensalt());
-		String query2 = "insert into Customer values(?, ?, ?, ?, ?)";
+		String query2 = "insert into Customer (id, password, name, email, phonenum) values(?, ?, ?, ?, ?)";
 
 		try {
 			conn = db.getConn();
