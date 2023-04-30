@@ -40,6 +40,8 @@
 		BoardVo vo = new BoardVo();
 		vo = dao.getBoardVo(boardID);
 		int result = dao.delete(boardID);
+
+		String encryptedFile = null;
 		if (result == -1) {
 			PrintWriter script = response.getWriter();
 			script.println("<script>");
@@ -53,7 +55,7 @@
 			if(vo.getFName()==null){
 				script.println("location.href = 'board.jsp'");
 			}else{
-				script.println("location.href = 'deleteFile.jsp?fName="+vo.getFName()+"'");
+				script.println("location.href = 'deleteFile.jsp?fName="+vo.getFName()+"&BoardId="+boardID+"'");
 			}
 			script.println("</script>");
 		}				

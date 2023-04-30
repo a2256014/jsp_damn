@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Cookie;
 
 @WebServlet("/login")
 public class LoginHandler extends HttpServlet {
@@ -36,6 +37,10 @@ public class LoginHandler extends HttpServlet {
 			session.setAttribute("userId", dvo.getId());
 			session.setAttribute("privilege", dvo.getPrivilege());
 			session.setAttribute("csrf", 0);
+			Cookie cookie = new Cookie("XSS", "XSSTESTING");
+
+    		// 쿠키를 응답 헤더에 추가
+    		response.addCookie(cookie);
 			response.sendRedirect("/fintech_pj_damn");
 		}
 		else{

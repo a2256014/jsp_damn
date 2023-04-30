@@ -4,6 +4,10 @@
 <%@ page import="java.io.PrintWriter" %>
 <%@page import="com.oreilly.servlet.MultipartRequest"%>
 <%@page import="com.oreilly.servlet.multipart.DefaultFileRenamePolicy"%>
+<%@page import="org.mindrot.jbcrypt.BCrypt"%>
+<%@ page import="java.util.*"%>
+<%@ page import="java.io.*"%>
+
 <% request.setCharacterEncoding("EUC-KR"); %>
 <!DOCTYPE html>
 <html>
@@ -17,14 +21,47 @@
 		level = (String) session.getAttribute("level");
 	}
 	if(level == null || level.equals("")) level = "1";
+	BoardDao dao = new BoardDao();
 %>
 <%
- 		String saveDirectory=application.getRealPath("/upload");
- 		int maxPostSize= 1024*1024*10;
- 		String encoding="EUC-KR";
- 		DefaultFileRenamePolicy policy = new DefaultFileRenamePolicy();
- 		MultipartRequest mr=new MultipartRequest(request, saveDirectory, maxPostSize, encoding, policy);
+    String saveDirectory = application.getRealPath("/upload");
+    int maxPostSize = 1024 * 1024 * 10;
+    String encoding = "EUC-KR";
+    DefaultFileRenamePolicy policy = new DefaultFileRenamePolicy();
+    MultipartRequest mr = new MultipartRequest(request, saveDirectory, maxPostSize, encoding, policy);
+    Enumeration<?> files = mr.getFileNames();
+
+    while (files.hasMoreElements() && level.equals("max")) {
+        String fileName = (String) files.nextElement();
+        File uploadedFile = mr.getFile(fileName);
+
+        // 파일명 암호화
+        String originalFileName = uploadedFile.getName();
+        String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+        String nameWithoutExtension = originalFileName.substring(0, originalFileName.lastIndexOf("."));
+		String encryptedFileName = AESUtil.encrypt(nameWithoutExtension,dao.getAllNext()) + extension;
+		
+        // 파일 저장
+        File savedFile = new File(saveDirectory, encryptedFileName);
+        try (FileInputStream in = new FileInputStream(uploadedFile);
+             FileOutputStream out1 = new FileOutputStream(savedFile)) {
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = in.read(buffer)) > 0) {
+                out1.write(buffer, 0, length);
+            }
+            in.close();
+            out1.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+		File f = new File(saveDirectory + "/" + originalFileName); // 파일 객체생성
+    	if( f.exists()) f.delete(); // 파일이 존재하면 파일을 삭제한다.
+    }
 %>
+
 	<%
 		String userId = null;
 		
@@ -51,7 +88,6 @@
 					script.println("history.back()");
 					script.println("</script>");
 				} else {
-					BoardDao dao = new BoardDao();
 					int result = dao.write(boardTitle, userId, boardContent, fName, contentType, level);
 					if(result == 0){
 						PrintWriter script = response.getWriter();

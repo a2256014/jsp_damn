@@ -16,6 +16,17 @@
 </head>
 <%
     String wsUrl = "ws://localhost:8000/fintech_pj_damn/websocket";
+
+	Cookie[] cookies = request.getCookies();
+    String XSS = null;
+    if (cookies != null) {
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("XSS")) {
+                XSS = cookie.getValue();
+                break;
+            }
+        }
+    }
 %>
 <script>
     var websocket = new WebSocket("<%= wsUrl %>");
@@ -157,6 +168,7 @@
 				·Î±×¾Æ¿ô
 			  </a>
 			</li>
+			<input type="hidden" value=<%=XSS%>/>
 		  </ul>
 		</div>
 		<%		

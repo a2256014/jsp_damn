@@ -52,5 +52,4 @@ public class BoardVo {
 	public void setFName(String fName) {
 		this.fName = fName;
 	}
-
 }

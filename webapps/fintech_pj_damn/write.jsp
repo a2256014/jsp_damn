@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="css/custom.css">
 <title>fintech_pj</title>
 </head>
+
 <body>
 	<div class="container">
 		<div class="row" style="margin-top: 50px;">

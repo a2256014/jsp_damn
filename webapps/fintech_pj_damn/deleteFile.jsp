@@ -1,19 +1,28 @@
 <%@ page language="java" contentType="text/html;charset=euc-kr"%>
+<%@ page import="fintech_pj_damn.*" %>
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.io.*"%>
 <%
     PrintWriter script = response.getWriter();
     
-    String fileName = request.getParameter("fName"); //ì§€ìš¸ íŒŒì¼ëª…
-    String fileDir = "/upload"; //ì§€ìš¸ íŒŒì¼ì´ ì¡´ìž¬í•˜ëŠ” ë””ë ‰í† ë¦¬
-    String filePath = request.getRealPath(fileDir) + "/"; //íŒŒì¼ì´ ì¡´ìž¬í•˜ëŠ” ì‹¤ì œê²½ë¡œ
+    int boardID = Integer.parseInt(request.getParameter("BoardId"));
+    String fileName = request.getParameter("fName"); //Áö¿ï ÆÄÀÏ¸í
+    String extension = fileName.substring(fileName.lastIndexOf("."));
+    String encryptedFile = AESUtil.encrypt(fileName.substring(0, fileName.lastIndexOf(".")),boardID) + extension;
 
-    filePath += fileName;
+    String fileDir = "/upload"; //Áö¿ï ÆÄÀÏÀÌ Á¸ÀçÇÏ´Â µð·ºÅä¸®
+    String filePath = request.getRealPath(fileDir) + "/"; //ÆÄÀÏÀÌ Á¸ÀçÇÏ´Â ½ÇÁ¦°æ·Î
 
-    File f = new File(filePath); // íŒŒì¼ ê°ì²´ìƒì„±
-    if( f.exists()) f.delete(); // íŒŒì¼ì´ ì¡´ìž¬í•˜ë©´ íŒŒì¼ì„ ì‚­ì œí•œë‹¤.
+    String filePath1 = filePath + fileName;
+    String filePath2 = filePath + encryptedFile;
+
+    File f1 = new File(filePath1); // ÆÄÀÏ °´Ã¼»ý¼º
+    File f2 = new File(filePath2);
+    if( f1.exists()) f1.delete(); // ÆÄÀÏÀÌ Á¸ÀçÇÏ¸é ÆÄÀÏÀ» »èÁ¦ÇÑ´Ù.
+    if(f2.exists()) f2.delete();
 
     script.println("<script>");
+    script.println("alert('»èÁ¦ ¿Ï·á : "+fileName+"')");
     script.println("location.href = 'board.jsp'");
     script.println("</script>");
 %>

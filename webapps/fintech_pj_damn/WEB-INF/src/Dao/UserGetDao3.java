@@ -30,8 +30,6 @@ public class UserGetDao3 {
 		if(matcher.find()){
 			Attack = true;
 		}
-		System.out.println(Attack);
-		System.out.println(query);
 		if(!Attack){
 			try {
 				conn = db.getConn();

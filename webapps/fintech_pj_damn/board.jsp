@@ -78,7 +78,6 @@
 			</form>
 
 				<%	
-					
 					BoardDao dao = new BoardDao();
 					if (request.getParameter("searchField") == null && request.getParameter("orderField") == null) { 
 				%>

@@ -12,10 +12,10 @@
 </head>
 <script src="js/bootstrap.js"></script>
 <%
-    Cookie[] cookies = request.getCookies();
+    Cookie[] cookies1 = request.getCookies();
     String sessionId = null;
-    if(cookies != null) {
-        for(Cookie cookie : cookies) {
+    if(cookies1 != null) {
+        for(Cookie cookie : cookies1) {
             if(cookie.getName().equals("JSESSIONID")) {
                 sessionId = cookie.getValue();
                 break;

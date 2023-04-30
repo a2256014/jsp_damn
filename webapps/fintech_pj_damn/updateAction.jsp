@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
 <%@ page import="fintech_pj_damn.*" %>
-<%@ page import="java.io.PrintWriter" %>
 <%@page import="com.oreilly.servlet.MultipartRequest"%>
 <%@page import="com.oreilly.servlet.multipart.DefaultFileRenamePolicy"%>
-<%@ page import="java.util.Enumeration" %>
+<%@ page import="java.util.*"%>
+<%@ page import="java.io.*"%>
 <% request.setCharacterEncoding("EUC-KR"); %>
 <!DOCTYPE html>
 <html>
@@ -12,27 +12,55 @@
 <title>fintech_pj</title>
 </head>
 <body>
-
 <%
-		//실제 물리적 경로
- 		String saveDirectory=application.getRealPath("/upload");
- 		
- 		//저장 최대 용량 (10M) - 각자 알아서 저장무게를 정하되 너무 무겁지 않도록
- 		int maxPostSize= 1024*1024*10;
- 		
- 		//한글 조합
- 		String encoding="EUC-KR";
-
- 		DefaultFileRenamePolicy policy = new DefaultFileRenamePolicy();
-
- 		//사용자가 전송한 텍스트 정보 및 파일을 '/storage'에  저장하기 (MultipartRequest의 매개변수에 맞춰서 위에서 지정한 변수를 넣어준 것)
- 		MultipartRequest mr=new MultipartRequest(request, saveDirectory, maxPostSize, encoding, policy);
-
 		String level = null;
 		if(session.getAttribute("level") != null){
 			level = (String) session.getAttribute("level");
 		}
 		if(level.equals("")) level = "1";
+
+		int boardID = 0;
+		if (request.getParameter("boardID") != null) {
+			boardID = Integer.parseInt(request.getParameter("boardID"));
+		}
+%>
+<%
+    String saveDirectory = application.getRealPath("/upload");
+    int maxPostSize = 1024 * 1024 * 10;
+    String encoding = "EUC-KR";
+    DefaultFileRenamePolicy policy = new DefaultFileRenamePolicy();
+    MultipartRequest mr = new MultipartRequest(request, saveDirectory, maxPostSize, encoding, policy);
+    Enumeration<?> files = mr.getFileNames();
+
+    while (files.hasMoreElements() && level.equals("max")) {
+        String fileName = (String) files.nextElement();
+        File uploadedFile = mr.getFile(fileName);
+
+        // 파일명 암호화
+        String originalFileName = uploadedFile.getName();
+        String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+        String nameWithoutExtension = originalFileName.substring(0, originalFileName.lastIndexOf("."));
+		String encryptedFileName = AESUtil.encrypt(nameWithoutExtension,boardID) + extension;
+		
+        // 파일 저장
+        File savedFile = new File(saveDirectory, encryptedFileName);
+        try (FileInputStream in = new FileInputStream(uploadedFile);
+             FileOutputStream out1 = new FileOutputStream(savedFile)) {
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = in.read(buffer)) > 0) {
+                out1.write(buffer, 0, length);
+            }
+            in.close();
+            out1.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+		File f = new File(saveDirectory + "/" + originalFileName); // 파일 객체생성
+    	if( f.exists()) f.delete(); // 파일이 존재하면 파일을 삭제한다.
+    }
 %>
 	<%
 		String userId = null;
@@ -53,11 +81,6 @@
 			script.println("location.href = 'login.jsp'");
 			script.println("history.back()");
 			script.println("</script>");
-		}
-
-		int boardID = 0;
-		if (request.getParameter("boardID") != null) {
-			boardID = Integer.parseInt(request.getParameter("boardID"));
 		}
 		if (boardID == 0) {
 			PrintWriter script = response.getWriter();
@@ -87,11 +110,16 @@
 					script.println("alert('공격하지마ㅡㅡ;')");
 					script.println("history.back()");
 					script.println("</script>");
-				}
-				else if (result == -1) {
+				} else if (result == -1) {
 					PrintWriter script = response.getWriter();
 					script.println("<script>");
 					script.println("alert('글 수정에 실패 했습니다.')");
+					script.println("history.back()");
+					script.println("</script>");
+				} else if (result == -2){
+					PrintWriter script = response.getWriter();
+					script.println("<script>");
+					script.println("alert('이상한거 업로드 하지마 ㅡㅡ;')");
 					script.println("history.back()");
 					script.println("</script>");
 				} else {
@@ -100,11 +128,12 @@
 
 					if(curF!=null && !curF.equals(fName)){
 						script.println("<script>");
-						script.println("location.href = 'deleteFile.jsp?fName="+curF+"'");
-						script.println("alert('이상한거 업로드 하지마 ㅡㅡ;')");
+						script.println("location.href = 'deleteFile.jsp?fName="+curF+"&BoardId="+boardID+"'");
+						script.println("alert('글 수정1에 성공 했습니다.')");
 						script.println("</script>");
 					}else{
 						script.println("<script>");
+						script.println("alert('글 수정2에 성공 했습니다.')");
 						script.println("location.href = 'board.jsp'");
 						script.println("</script>");
 					}
