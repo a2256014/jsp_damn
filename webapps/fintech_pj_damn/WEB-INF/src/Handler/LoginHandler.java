@@ -22,7 +22,6 @@ public class LoginHandler extends HttpServlet {
 
 		String n=new String(request.getParameter("userid").getBytes("8859_1"), "EUC-KR");  
 		String p=request.getParameter("userpass"); 
-		
 		try {
 			dvo = dao.getUser(n,p);
 			

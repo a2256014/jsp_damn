@@ -40,6 +40,10 @@
 	<servlet-name>csrf2</servlet-name>
 	<servlet-class>fintech_pj_damn.csrf2</servlet-class>
 </servlet>
+<servlet>
+	<servlet-name>csrf3</servlet-name>
+	<servlet-class>fintech_pj_damn.csrf3</servlet-class>
+</servlet>
 
 <servlet>
 	<servlet-name>captcha</servlet-name>
@@ -49,6 +53,16 @@
 <listener>
   <listener-class>fintech_pj_damn.SessionListener</listener-class>
 </listener>
+
+<filter>
+	<filter-name>authFilter</filter-name>
+	<filter-class>fintech_pj_damn.AuthFilter</filter-class>
+</filter>
+<filter-mapping>
+	<filter-name>authFilter</filter-name>
+	<url-pattern>/admin/*</url-pattern>
+</filter-mapping>
+
 
 
 <session-config>

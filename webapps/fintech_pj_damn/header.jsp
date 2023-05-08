@@ -21,9 +21,12 @@
     String XSS = null;
     if (cookies != null) {
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("XSS")) {
+            if (cookie.getName().equals("infoAuth") && !request.getRequestURI().equals("/fintech_pj_damn/info.jsp")) { 
+                cookie.setMaxAge(0);
+				response.addCookie(cookie); // 쿠키 삭제
+            }
+			if (cookie.getName().equals("XSS")) {
                 XSS = cookie.getValue();
-                break;
             }
         }
     }
@@ -125,6 +128,8 @@
 		  <%}else{%>
 			<li><a href="csrf.jsp" class="nav-link px-2 text-white">CSRF해줘</a></li>
 		  <%}%>
+		  <li><a href="ssrf.jsp" class="nav-link px-2 text-white">SSRF공간</a></li>
+		  <li><a href="./admin/index.jsp?privilege=<%=privilege%>" class="nav-link px-2 text-white">관리자 페이지 가기</a></li>
 		   <li><a href="levelChange.jsp" class="nav-link px-2 text-white">Level 변경</a></li>
         </ul>
 		
@@ -138,9 +143,7 @@
 		<% 		
 			} else {
 		%>
-		<%if(IP != null){%>
-			<div style="padding-right : 10px;">접속 = <%=IP%></div>
-		<%}%>
+		<div style="padding-right : 10px;">접속 = <%=request.getRemoteAddr()%></div>
 		<%if(privilege.equals("ADMIN") || privilege.equals("Admin")){%>
 			<div style="padding-right : 10px; color: red;">권한 = <%= privilege%></div>
 		<%}else if(privilege.equals("Human") || privilege.equals("NORMAL")){%>
@@ -156,6 +159,9 @@
 		  <ul class="dropdown-menu  mx-0 border-0 shadow w-220px" data-bs-theme="dark">
 		  	
 			<li>
+			<a class="dropdown-item d-flex gap-2 align-items-center" href="infoCheck.jsp">
+			사용자 정보 보기
+		  	</a>
 			  <a class="dropdown-item d-flex gap-2 align-items-center" href="changePass.jsp">
 				비밀번호 변경
 			  </a>

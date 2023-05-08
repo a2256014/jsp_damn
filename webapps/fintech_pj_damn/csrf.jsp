@@ -37,7 +37,9 @@
                 <p>Ver.2 = GET방식</p>
                 <p>Ver.3 = POST방식</p>
                 <p>Ver.4 = 토큰검증</p>
-                <p>Ver.5 = 2차인증</p>
+                <p>Ver.5 = confirm창</p>
+                <p>Ver.6 = Referer검증</p>
+                <p>Ver.7 = 2차인증</p>
                 <div style="height : 50px">
                 <form method="get" name="csrf" action="csrfCheckAction.jsp">
                     <input type="hidden" name="check1" value="<%= userId%>"></input>
@@ -88,6 +90,44 @@
                 </form>
                 </div>
                 <div style="height : 50px;">
+                <form method="get" name="csrf" action="/fintech_pj_damn/csrf3" style="display: flex;  align-items: center;">
+                    <input type="hidden" name="id" value="<%= userId%>"></input>
+                    <select class="form-control" name="privilege" style="width : 140px;">
+							<option value="Slave">노예</option>
+							<option value="Human">사람</option>
+                            <option value="Admin">관리자</option>
+					</select>
+                    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                        <button type="button" class="btn btn-warning" onclick="confirmCSRF()">CSRF 시도 Ver.5</button>
+                    </div>
+                </form>
+                <script>
+                    function confirmCSRF() {
+                        if(confirm("권한을 변경하시겠습니까?")) {
+                            var hiddenInput = document.createElement("input");
+                            hiddenInput.setAttribute("type", "hidden");
+                            hiddenInput.setAttribute("name", "confirm");
+                            hiddenInput.setAttribute("value", "Y");
+                            document.csrf[4].appendChild(hiddenInput);
+                            document.csrf[4].submit();
+                        }
+                    }
+                </script>
+                </div>
+                <div style="height : 50px;">
+                <form method="post" name="csrf" action="/fintech_pj_damn/csrf3" style="display: flex;  align-items: center;">
+                    <input type="hidden" name="id" value="<%= userId%>"></input>
+                    <select class="form-control" name="privilege" style="width : 140px;">
+							<option value="Slave">노예</option>
+							<option value="Human">사람</option>
+                            <option value="Admin">관리자</option>
+					</select>
+                    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                        <button type="submit" class="btn btn-warning">CSRF 시도 Ver.6</button>
+                    </div>
+                </form>
+                </div>
+                <div style="height : 50px;">
                 <form method="post" name="csrf" action="/fintech_pj_damn/csrf2" style="display: flex;  align-items: center;">
                     <input type="hidden" name="id" value="<%= userId%>"></input>
                     <div class="form-group">
@@ -106,7 +146,7 @@
                             <option value="Admin">관리자</option>
 					</select>
                     <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                        <button type="submit" class="btn btn-warning">CSRF 시도 Ver.5</button>
+                        <button type="submit" class="btn btn-warning">CSRF 시도 Ver.7</button>
                     </div>
                     
                 </form>

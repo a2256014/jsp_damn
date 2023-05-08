@@ -58,7 +58,6 @@ public class LoginHandler2 extends HttpServlet {
 		System.out.println("try login : "  + ipAddress);
 		if(dvo != null && !lockoutTime.containsKey(ipAddress)){
 			session.setAttribute("userId", dvo.getId());
-			session.setAttribute("IP", ipAddress);
 			session.setAttribute("privilege", dvo.getPrivilege());
 			session.setAttribute("attempts", 0);
 			session.setAttribute("unlock", "true");
